@@ -42,33 +42,23 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       const convertedArticleData = articleData.map((article) => {
         return convertTimestampToDate(article);
       });
-      return convertedArticleData;
-    })
-    .then((convertedArticleData) => {
-      return {
-        topicData: prepareDataForPgFormat(topicData),
-        userData: prepareDataForPgFormat(userData),
-        articleData: prepareDataForPgFormat(convertedArticleData),
-      };
-    })
-    .then(({ topicData, userData, articleData, commentData }) => {
       const topicDataInsertStr = format(
         `INSERT INTO topics 
         (description, slug, img_url) 
         VALUES %L;`,
-        topicData
+        prepareDataForPgFormat(topicData)
       );
       const userDataInsertStr = format(
         `INSERT INTO users 
         (username, name, avatar_url) 
         VALUES %L;`,
-        userData
+        prepareDataForPgFormat(userData)
       );
       const articleDataInsertStr = format(
         `INSERT INTO articles 
         (created_at, title, topic, author, body, votes, article_img_url) 
         VALUES %L;`,
-        articleData
+        prepareDataForPgFormat(convertedArticleData)
       );
       return db.query(
         topicDataInsertStr +
@@ -77,17 +67,22 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
           `SELECT title, article_id FROM articles`
       );
     })
-    .then((queryReturn) => {
+    .then(([{ rows }]) => {
       let articleIdLookup = {};
-      for (let article of queryReturn[3].rows) {
+      for (let article of rows) {
         articleIdLookup[article.title] = article.article_id;
       }
-      const convertedCommentData = commentData.map((comment) => {
-        comment.article_id = articleIdLookup[comment.article_title];
-        delete comment.article_title;
-        return convertTimestampToDate(comment);
-      });
-      const preparedCommentData = prepareDataForPgFormat(convertedCommentData);
+      const preparedCommentData = prepareDataForPgFormat(
+        commentData.map((comment) => {
+          let commentCopy = {};
+          for (let key in comment) {
+            commentCopy[key] = comment[key];
+          }
+          commentCopy.article_id = articleIdLookup[comment.article_title];
+          delete commentCopy.article_title;
+          return convertTimestampToDate(commentCopy);
+        })
+      );
       const commentDataInsertStr = format(
         `INSERT INTO comments 
         (created_at, body, votes, author, article_id) 
