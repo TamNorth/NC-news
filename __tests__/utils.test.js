@@ -1,6 +1,7 @@
 const {
   convertTimestampToDate,
   prepareDataForPgFormat,
+  writeInsertStrings,
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -81,5 +82,88 @@ describe("prepareDataForPgFormat", () => {
     const inputCopy = [{ col1: "datum1", col2: 2, col3: "datum3" }];
     prepareDataForPgFormat(input);
     expect(input).toEqual(inputCopy);
+  });
+});
+
+describe("writeInsertStrings", () => {
+  const input = {
+    topics: [
+      {
+        description: "test description 1",
+        slug: "testslug1",
+        img_url: "testimgurl1",
+      },
+      {
+        description: "test description 2",
+        slug: "testslug2",
+        img_url: "testimgurl2",
+      },
+    ],
+    users: [
+      {
+        username: "testusrname1",
+        name: "testname1",
+        avatar_url: "testavatarurl1",
+      },
+      {
+        username: "testusrname2",
+        name: "testname2",
+        avatar_url: "testavatarurl2",
+      },
+    ],
+    articles: [
+      {
+        created_at: "testtimestamp1",
+        title: "testtitle1",
+        topic: "testtopic1",
+        author: "testauthor1",
+        body: "testbody1",
+        votes: 1,
+        article_img_url: "testarticleurl1",
+      },
+      {
+        created_at: "testtimestamp2",
+        title: "testtitle2",
+        topic: "testtopic2",
+        author: "testauthor2",
+        body: "testbody2",
+        votes: 2,
+        article_img_url: "testarticleurl2",
+      },
+    ],
+  };
+  test("inserts into a table named according to keys of each dataset", () => {
+    const output = writeInsertStrings(input);
+    const slice1 = output.slice(0, 18);
+    const expected1 = "INSERT INTO topics";
+    const indexOfSlice2 = output.indexOf(";");
+    const slice2 = output.slice(indexOfSlice2 + 2, indexOfSlice2 + 19);
+    const expected2 = "INSERT INTO users";
+    expect(slice1).toBe(expected1);
+    expect(slice2).toBe(expected2);
+  });
+  test("selects the correct column titles from the dataset", () => {
+    const output = writeInsertStrings(input);
+    const sliceSearchTerm = "articles ";
+    const indexOfSlice = output.indexOf(sliceSearchTerm);
+    const expected =
+      "(created_at, title, topic, author, body, votes, article_img_url)";
+    const slice = output.slice(
+      indexOfSlice + sliceSearchTerm.length,
+      indexOfSlice + sliceSearchTerm.length + expected.length
+    );
+    expect(slice).toBe(expected);
+  });
+  test("inserts data values in same order as column titles", () => {
+    const output = writeInsertStrings(input);
+    const sliceSearchTerm = "VALUES ";
+    const indexOfSlice = output.indexOf(sliceSearchTerm);
+    const expected =
+      "('test description 1', 'testslug1', 'testimgurl1'), ('test description 2', 'testslug2', 'testimgurl2')";
+    const slice = output.slice(
+      indexOfSlice + sliceSearchTerm.length,
+      indexOfSlice + sliceSearchTerm.length + expected.length
+    );
+    expect(slice).toBe(expected);
   });
 });

@@ -1,6 +1,10 @@
 const db = require("../connection");
 const format = require("pg-format");
-const { prepareDataForPgFormat, convertTimestampToDate } = require("./utils");
+const {
+  prepareDataForPgFormat,
+  convertTimestampToDate,
+  writeInsertStrings,
+} = require("./utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db
@@ -42,29 +46,13 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       const convertedArticleData = articleData.map((article) => {
         return convertTimestampToDate(article);
       });
-      const topicDataInsertStr = format(
-        `INSERT INTO topics 
-        (description, slug, img_url) 
-        VALUES %L;`,
-        prepareDataForPgFormat(topicData)
-      );
-      const userDataInsertStr = format(
-        `INSERT INTO users 
-        (username, name, avatar_url) 
-        VALUES %L;`,
-        prepareDataForPgFormat(userData)
-      );
-      const articleDataInsertStr = format(
-        `INSERT INTO articles 
-        (created_at, title, topic, author, body, votes, article_img_url) 
-        VALUES %L;`,
-        prepareDataForPgFormat(convertedArticleData)
-      );
+      const dataInsertString = writeInsertStrings({
+        topics: topicData,
+        users: userData,
+        articles: convertedArticleData,
+      });
       return db.query(
-        topicDataInsertStr +
-          userDataInsertStr +
-          articleDataInsertStr +
-          `SELECT title, article_id FROM articles`
+        dataInsertString + `; SELECT title, article_id FROM articles;`
       );
     })
     .then(([{ rows }]) => {
@@ -72,25 +60,16 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       for (let article of rows) {
         articleIdLookup[article.title] = article.article_id;
       }
-      const preparedCommentData = prepareDataForPgFormat(
-        commentData.map((comment) => {
-          let commentCopy = {};
-          for (let key in comment) {
-            commentCopy[key] = comment[key];
-          }
-          commentCopy.article_id = articleIdLookup[comment.article_title];
-          delete commentCopy.article_title;
-          return convertTimestampToDate(commentCopy);
-        })
-      );
-      const commentDataInsertStr = format(
-        `INSERT INTO comments 
-        (created_at, body, votes, author, article_id) 
-        VALUES %L 
-        RETURNING *;`,
-        preparedCommentData
-      );
-      return db.query(commentDataInsertStr);
+      const preparedCommentData = commentData.map((comment) => {
+        let commentCopy = {};
+        for (let key in comment) {
+          commentCopy[key] = comment[key];
+        }
+        commentCopy.article_id = articleIdLookup[comment.article_title];
+        delete commentCopy.article_title;
+        return convertTimestampToDate(commentCopy);
+      });
+      return db.query(writeInsertStrings({ comments: preparedCommentData }));
     });
 };
 module.exports = seed;
