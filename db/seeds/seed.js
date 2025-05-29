@@ -1,10 +1,5 @@
 const db = require("../connection");
-const format = require("pg-format");
-const {
-  prepareDataForPgFormat,
-  convertTimestampToDate,
-  writeInsertStrings,
-} = require("./utils");
+const { convertTimestampToDate, writeInsertStrings } = require("./utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db

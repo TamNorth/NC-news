@@ -31,6 +31,5 @@ exports.writeInsertStrings = (dataSets) => {
     const pgFormatData = exports.prepareDataForPgFormat(dataSets[dataSet]);
     queryAccumulator.push(format(pgFormatString, pgFormatData));
   }
-  console.log(queryAccumulator.join(""));
   return queryAccumulator.join("");
 };
