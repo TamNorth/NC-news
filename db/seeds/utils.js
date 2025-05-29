@@ -5,5 +5,12 @@ exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   return { created_at: new Date(created_at), ...otherProperties };
 };
 
-
-
+exports.prepareDataForPgFormat = (data) => {
+  return data.map((row) => {
+    let formattedRow = [];
+    for (let col in row) {
+      formattedRow.push(row[col]);
+    }
+    return formattedRow;
+  });
+};

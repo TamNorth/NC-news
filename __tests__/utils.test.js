@@ -1,5 +1,6 @@
 const {
-  convertTimestampToDate
+  convertTimestampToDate,
+  prepareDataForPgFormat,
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -38,3 +39,47 @@ describe("convertTimestampToDate", () => {
   });
 });
 
+describe("prepareDataForPgFormat", () => {
+  test("returns a new array", () => {
+    const input = [
+      { col1: "datum1", col2: 2, col3: "datum3" },
+      { col1: "datum4", col2: 5, col3: "datum6" },
+      { col1: "datum7", col2: 8, col3: "datum9" },
+    ];
+    expect(prepareDataForPgFormat(input)).not.toBe(input);
+  });
+  test("reformats a single datum in a nested object into a nested array", () => {
+    const input = [{ col1: "datum1" }];
+    const expected = [["datum1"]];
+    expect(prepareDataForPgFormat(input)).toEqual(expected);
+  });
+  test("reformats mutliple data in a single nested object into a nested array", () => {
+    const input = [{ col1: "datum1", col2: "datum2", col3: "datum3" }];
+    const expected = [["datum1", "datum2", "datum3"]];
+    expect(prepareDataForPgFormat(input)).toEqual(expected);
+  });
+  test("reformats data in multiple nested objects into nested arrays", () => {
+    const input = [
+      { col1: "datum1", col2: "datum2", col3: "datum3" },
+      { col1: "datum4", col2: "datum5", col3: "datum6" },
+      { col1: "datum7", col2: "datum8", col3: "datum9" },
+    ];
+    const expected = [
+      ["datum1", "datum2", "datum3"],
+      ["datum4", "datum5", "datum6"],
+      ["datum7", "datum8", "datum9"],
+    ];
+    expect(prepareDataForPgFormat(input)).toEqual(expected);
+  });
+  test("works with numbers and strings", () => {
+    const input = [{ col1: "datum1", col2: 2, col3: "datum3" }];
+    const expected = [["datum1", 2, "datum3"]];
+    expect(prepareDataForPgFormat(input)).toEqual(expected);
+  });
+  test("does not mutate the input", () => {
+    const input = [{ col1: "datum1", col2: 2, col3: "datum3" }];
+    const inputCopy = [{ col1: "datum1", col2: 2, col3: "datum3" }];
+    prepareDataForPgFormat(input);
+    expect(input).toEqual(inputCopy);
+  });
+});
