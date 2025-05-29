@@ -16,19 +16,21 @@ exports.prepareDataForPgFormat = (data) => {
   });
 };
 
-exports.writeInsertStrings = (dataSets) => {
+exports.writeInsertStrings = (allTablesData) => {
   let queryAccumulator = [];
-  for (let dataSet in dataSets) {
+  for (let tableData in allTablesData) {
     let stringAccumulator = [];
-    stringAccumulator.push(`INSERT INTO ${dataSet} (`);
-    for (let col in dataSets[dataSet][0]) {
+    stringAccumulator.push(`INSERT INTO ${tableData} (`);
+    for (let col in allTablesData[tableData][0]) {
       stringAccumulator.push(`${col}`);
       stringAccumulator.push(`, `);
     }
     stringAccumulator.pop();
     stringAccumulator.push(`) VALUES %L; `);
     const pgFormatString = stringAccumulator.join("");
-    const pgFormatData = exports.prepareDataForPgFormat(dataSets[dataSet]);
+    const pgFormatData = exports.prepareDataForPgFormat(
+      allTablesData[tableData]
+    );
     queryAccumulator.push(format(pgFormatString, pgFormatData));
   }
   return queryAccumulator.join("");
