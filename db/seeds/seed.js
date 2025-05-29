@@ -55,12 +55,9 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       for (let article of rows) {
         articleIdLookup[article.title] = article.article_id;
       }
-      const preparedCommentData = commentData.map((comment) => {
-        let commentCopy = {};
-        for (let key in comment) {
-          commentCopy[key] = comment[key];
-        }
-        commentCopy.article_id = articleIdLookup[comment.article_title];
+      const preparedCommentData = commentData.map(({ ...commentKeys }) => {
+        let commentCopy = { ...commentKeys };
+        commentCopy.article_id = articleIdLookup[commentCopy.article_title];
         delete commentCopy.article_title;
         return convertTimestampToDate(commentCopy);
       });
