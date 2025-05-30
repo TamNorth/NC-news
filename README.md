@@ -25,16 +25,16 @@ PGDATABASE=nc_news
 
 ## Table columns and references
 
-topics                |  |users                 |  |articles                   |  |comments               |  |user_topic             |  |
-:---------------------|--|:---------------------|--|:--------------------------|--|:----------------------|--|:----------------------|--|
-description<br>VC(200)|  |username<br>VC(40) PK |>B|article_id<br>SE PK        |>C|comment_id<br>SE PK    |  |user_topic_id<br>SE PK |  |
-slug<br>VC(20) PK     |>A|name<br>VC(40)        |  |title<br>VC(200)           |  |article_id<br>INT      |<C|username<br>VC(40)     |<B|
-img_url<br>VC(1000)   |  |avatar_url<br>VC(1000)|  |topic<br>VC(20)            |<A|body<br>TEXT           |  |topic<br>VC(20)        |<A|
-.                     |  |                      |  |author<br>VC(40)           |<B|vote<br>INT DF:0       |  |                       |  |
-.                     |  |                      |  |body<br>TEXT               |  |author<br>VC(40)       |<B|                       |  |
-.                     |  |                      |  |created_at<br>TS DF:CTS    |  |created_at<br>TS DF:CTS|  |                       |  |
-.                     |  |                      |  |votes<br>INT DF:0          |  |                       |  |                       |  |
-.                     |  |                      |  |article_img_url<br>VC(1000)|  |                       |  |                       |  |
+topics                  |  |users                   |  |articles                     |  |comments                 |  |user_topic               |  |
+:-----------------------|--|:-----------------------|--|:----------------------------|--|:------------------------|--|:------------------------|--|
+description<br>*VC(200)*|  |username<br>*VC(40) PK* |>B|article_id<br>*SE PK*        |>C|comment_id<br>*SE PK*    |  |user_topic_id<br>*SE PK* |  |
+slug<br>*VC(20) PK*     |>A|name<br>*VC(40)*        |  |title<br>*VC(200)*           |  |article_id<br>*INT*      |<C|username<br>*VC(40)*     |<B|
+img_url<br>*VC(1000)*   |  |avatar_url<br>*VC(1000)*|  |topic<br>*VC(20)*            |<A|body<br>*TEXT*           |  |topic<br>*VC(20)*        |<A|
+.                       |  |                        |  |author<br>*VC(40)*           |<B|vote<br>*INT DF:0*       |  |                         |  |
+.                       |  |                        |  |body<br>*TEXT*               |  |author<br>*VC(40*)       |<B|                         |  |
+.                       |  |                        |  |created_at<br>*TS DF:CTS*    |  |created_at<br>*TS DF:CTS*|  |                         |  |
+.                       |  |                        |  |votes<br>*INT DF:0*          |  |                         |  |                         |  |
+.                       |  |                        |  |article_img_url<br>*VC(1000)*|  |                         |  |                         |  |
 
 ## Key to SQL abbreviations
 
