@@ -23,32 +23,26 @@ PGDATABASE=nc_news
 
 # Entity Relationship Diagram
 
-<!--
-TABLE COLUMNS BY TABLE
-topics         |users          |articles           |comments       |user_topic       |
----------------+---------------+-------------------+---------------+-----------------+
-description |  |username    |>B|article_id      |>C|comment_id  |  |user_topic_id |  |
-  VC(200)   |  |  VC(40) PK |  |  SE PK         |  |  SE PK     |  |  SE PK       |  |
-slug        |>A|name        |  |title           |  |article_id  |<C|username      |<B|
-  VC(20) PK |  |  VC(40)    |  |  VC(200)       |  |  INT       |  |  VC(40)      |  |
-img_url     |  |avatar_url  |  |topic           |<A|body        |  |topic         |<A|
-  VC(1000)  |  |  VC(1000)  |  |  VC(20)        |  |  TEXT      |  |  VC(20)      |  |
-            |  |            |  |author          |<B|votes       |  |              |  |
-            |  |            |  |  VC(40)        |  |  INT DF:0  |  |              |  |
-            |  |            |  |body            |  |author      |<B|              |  |
-            |  |            |  |  TEXT          |  |  VC(40)    |  |              |  |
-            |  |            |  |created_at      |  |created_at  |  |              |  |
-            |  |            |  |  TS DF:CTS     |  |  TS DF:CTS |  |              |  |
-            |  |            |  |votes           |  |            |  |              |  |
-            |  |            |  |  INT DF:0      |  |            |  |              |  |
-            |  |            |  |article_img_url |  |            |  |              |  |
-            |  |            |  |  VC(1000)      |  |            |  |              |  |
+## Table columns and references
 
-KEY TO SQL ABBREVIATIONS
----+---------------++-----+-----------------
->A | Reference out || PK  | PRIMARY KEY
-<A | Reference in  || CTS | CURRENT_TIMESAMP
-VC | VARCHAR       || NN  | NOT NULL
-SE | SERIAL        || DF: | DEFAULT
+topics                |  |users                 |  |articles                   |  |comments               |  |user_topic             |  |
+:---------------------|--|:---------------------|--|:--------------------------|--|:----------------------|--|:----------------------|--|
+description<br>VC(200)|  |username<br>VC(40) PK |>B|article_id<br>SE PK        |>C|comment_id<br>SE PK    |  |user_topic_id<br>SE PK |  |
+slug<br>VC(20) PK     |>A|name<br>VC(40)        |  |title<br>VC(200)           |  |article_id<br>INT      |<C|username<br>VC(40)     |<B|
+img_url<br>VC(1000)   |  |avatar_url<br>VC(1000)|  |topic<br>VC(20)            |<A|body<br>TEXT           |  |topic<br>VC(20)        |<A|
+.                     |  |                      |  |author<br>VC(40)           |<B|vote<br>INT DF:0       |  |                       |  |
+.                     |  |                      |  |body<br>TEXT               |  |author<br>VC(40)       |<B|                       |  |
+.                     |  |                      |  |created_at<br>TS DF:CTS    |  |created_at<br>TS DF:CTS|  |                       |  |
+.                     |  |                      |  |votes<br>INT DF:0          |  |                       |  |                       |  |
+.                     |  |                      |  |article_img_url<br>VC(1000)|  |                       |  |                       |  |
 
--->
+## Key to SQL abbreviations
+
+symbol|explanation    |symbol|explanation
+-----:|:--------------|-----:|:-----------------
+  \>A | Reference out |   PK | PRIMARY KEY
+  \<A | Reference in  |  CTS | CURRENT_TIMESTAMP
+   VC | VARCHAR       |   NN | NOT NULL
+   SE | SERIAL        |  DF: | DEFAULT
+
+
