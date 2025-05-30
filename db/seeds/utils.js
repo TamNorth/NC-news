@@ -1,5 +1,6 @@
 const db = require("../../db/connection");
 const format = require("pg-format");
+const fs = require("fs");
 
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
@@ -34,4 +35,17 @@ exports.writeInsertStrings = (allTablesData) => {
     queryAccumulator.push(format(pgFormatString, pgFormatData));
   }
   return queryAccumulator.join("");
+};
+
+exports.makeQuery = (query, fileName) => {
+  db.query(query).then((result) => {
+    const data = "```js\n" + JSON.stringify(result.rows) + "\n```";
+    fs.writeFile(`${__dirname}/../../output/${fileName}.md`, data, (error) => {
+      if (!!error) {
+        console.log(error);
+      } else {
+        console.log("file write successful");
+      }
+    });
+  });
 };

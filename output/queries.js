@@ -1,18 +1,5 @@
 const db = require("../db/connection.js");
-const fs = require("fs");
-
-function makeQuery(query, fileName) {
-  db.query(query).then((result) => {
-    const data = "```js\n" + JSON.stringify(result.rows) + "\n```";
-    fs.writeFile(`${__dirname}/${fileName}.md`, data, (error) => {
-      if (!!error) {
-        console.log(error);
-      } else {
-        console.log("file write successful");
-      }
-    });
-  });
-}
+const { makeQuery } = require("../db/seeds/utils.js");
 
 makeQuery("SELECT * FROM users;", "all_users");
 makeQuery("SELECT * FROM articles WHERE topic = 'coding'", "coding_articles");
