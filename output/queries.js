@@ -24,4 +24,6 @@ makeQuery(
 );
 makeQuery("SELECT * FROM comments WHERE votes > 10", "good_comments");
 
+db.query("dt");
+
 db.end();
