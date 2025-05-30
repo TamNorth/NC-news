@@ -1,7 +1,13 @@
 const db = require("../connection");
 const { convertTimestampToDate, writeInsertStrings } = require("./utils");
 
-const seed = ({ topicData, userData, articleData, commentData }) => {
+const seed = ({
+  topicData,
+  userData,
+  articleData,
+  commentData,
+  userTopicData,
+}) => {
   return db
     .query(
       `DROP TABLE IF EXISTS comments;
