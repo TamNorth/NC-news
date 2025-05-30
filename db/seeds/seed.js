@@ -10,7 +10,8 @@ const seed = ({
 }) => {
   return db
     .query(
-      `DROP TABLE IF EXISTS comments;
+      `DROP TABLE IF EXISTS user_topic;
+      DROP TABLE IF EXISTS comments;
       DROP TABLE IF EXISTS articles;
       DROP TABLE IF EXISTS users;
       DROP TABLE IF EXISTS topics;
@@ -41,6 +42,11 @@ const seed = ({
         votes INT DEFAULT 0, 
         author VARCHAR(40) REFERENCES users(username) ON DELETE CASCADE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE TABLE user_topic (
+        user_topic_id SERIAL PRIMARY KEY,
+        username VARCHAR(40) REFERENCES users(username) ON DELETE CASCADE,
+        topic VARCHAR(20) REFERENCES topics(slug) ON DELETE CASCADE
       );`
     )
     .then(() => {
@@ -51,6 +57,7 @@ const seed = ({
         topics: topicData,
         users: userData,
         articles: convertedArticleData,
+        user_topic: userTopicData,
       });
       return db.query(
         dataInsertString + `; SELECT title, article_id FROM articles;`

@@ -562,7 +562,7 @@ describe("seed", () => {
     });
   });
 
-  describe.skip("user_topic table", () => {
+  describe("user_topic table", () => {
     test("user_topic table exists", () => {
       return db
         .query(
@@ -574,7 +574,7 @@ describe("seed", () => {
           );`
         )
         .then(({ rows: [{ exists }] }) => {
-          expects(exists).toBe(true);
+          expect(exists).toBe(true);
         });
     });
 
@@ -583,14 +583,14 @@ describe("seed", () => {
         .query(
           `SELECT column_name, data_type, column_default 
             FROM information_schema.columns
-            WHERE table_name = 'user_topics'
+            WHERE table_name = 'user_topic'
             AND column_name = 'user_topic_id';`
         )
         .then(({ rows: [column] }) => {
           expect(column.column_name).toBe("user_topic_id");
           expect(column.data_type).toBe("integer");
           expect(column.column_default).toBe(
-            "nextval('articles_article_id_seq'::regclass)"
+            "nextval('user_topic_user_topic_id_seq'::regclass)"
           );
         });
     });
@@ -618,7 +618,7 @@ describe("seed", () => {
           JOIN information_schema.key_column_usage AS kcu
           ON tc.constraint_name = kcu.constraint_name
           JOIN information_schema.constraint_column_usage AS ccu
-          ON tc.constraint_name = kcu.constraint_name
+          ON tc.constraint_name = ccu.constraint_name
           WHERE tc.constraint_type = 'FOREIGN KEY'
           AND tc.table_name = 'user_topic'
           AND kcu.column_name = 'username'
@@ -637,7 +637,7 @@ describe("seed", () => {
             FROM information_schema.table_constraints AS tc
             JOIN information_schema.key_column_usage AS kcu
             ON tc.constraint_name = kcu.constraint_name
-            JOIN information_schema.column_constraint_usage AS ccu
+            JOIN information_schema.constraint_column_usage AS ccu
             ON tc.constraint_name = ccu.constraint_name
             WHERE tc.table_name = 'user_topic'
             AND tc.constraint_type = 'FOREIGN KEY'
@@ -705,13 +705,13 @@ describe("data insertion", () => {
     });
   });
 
-  test.skip("user_topic data has been inserted correctly", () => {
+  test("user_topic data has been inserted correctly", () => {
     return db.query(`SELECT * FROM user_topic`).then(({ rows: user_topic }) => {
       expect(user_topic).toHaveLength(6);
-      comments.forEach((comment) => {
-        expect(comment).toHaveProperty("user_topic_id");
-        expect(comment).toHaveProperty("username");
-        expect(comment).toHaveProperty("topic");
+      user_topic.forEach((follow) => {
+        expect(follow).toHaveProperty("user_topic_id");
+        expect(follow).toHaveProperty("username");
+        expect(follow).toHaveProperty("topic");
       });
     });
   });
