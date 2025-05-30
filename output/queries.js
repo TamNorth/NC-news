@@ -23,5 +23,6 @@ makeQuery(
   "grumpy_articles"
 );
 makeQuery("SELECT * FROM comments WHERE votes > 10", "good_comments");
+makeQuery("SELECT * FROM user_topic", "user_topic_data");
 
 db.end();
