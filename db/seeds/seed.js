@@ -63,8 +63,9 @@ const seed = ({
         dataInsertString + `; SELECT title, article_id FROM articles;`
       );
     })
-    .then(([{ rows }]) => {
+    .then((result) => {
       let articleIdLookup = {};
+      const rows = result[4].rows;
       for (let article of rows) {
         articleIdLookup[article.title] = article.article_id;
       }
