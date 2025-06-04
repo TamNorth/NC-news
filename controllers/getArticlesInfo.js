@@ -1,9 +1,6 @@
 const db = require("../db/connection.js");
-const {
-  getCommentCountLookup,
-  sortArticlesByDate,
-  appendPropertyByLookup,
-} = require("../models");
+const { getCommentCountLookup, sortArticlesByDate } = require("../models");
+const { appendPropertyByLookup } = require("../utils.js");
 
 const getArticlesInfo = async (req, res) => {
   try {

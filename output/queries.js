@@ -1,5 +1,5 @@
 const db = require("../db/connection.js");
-const { makeQuery } = require("../db/seeds/utils.js");
+const { makeQuery } = require("../utils.js");
 
 // GET ALL DATA
 // makeQuery("SELECT * FROM articles;", "all_articles");

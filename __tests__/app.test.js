@@ -62,7 +62,6 @@ describe("GET /api/articles", () => {
               article_img_url,
               comment_count,
             } = article;
-            console.log(articles);
             expect(typeof article_id).toBe("number");
             expect(typeof author).toBe("string");
             expect(typeof title).toBe("string");
