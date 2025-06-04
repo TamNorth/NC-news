@@ -15,8 +15,8 @@ const getArticlesInfo = async (req, res) => {
       "comment_count",
       commentCountLookup
     );
-    sortArticlesByDate(articlesWithCommentCount);
-    res.status(200).send({ articles: articlesWithCommentCount });
+    const articlesByDate = sortArticlesByDate(articlesWithCommentCount);
+    res.status(200).send({ articles: articlesByDate });
   } catch {
     if (err) console.log(err);
   }

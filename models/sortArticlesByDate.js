@@ -1,8 +1,9 @@
 const sortArticlesByDate = (articles) => {
-  articles.sort((a, b) => {
+  const articlesCopy = articles.map((article) => article);
+  articlesCopy.sort((a, b) => {
     return Number(b.created_at) - Number(a.created_at);
   });
-  return articles;
+  return articlesCopy;
 };
 
 module.exports = sortArticlesByDate;

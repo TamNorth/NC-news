@@ -2,7 +2,7 @@ const db = require("../db/connection.js");
 const { makeQuery } = require("../utils.js");
 
 // GET ALL DATA
-makeQuery("SELECT * FROM articles WHERE votes > 0;", "all_articles");
+// makeQuery("SELECT * FROM articles;", "all_articles");
 // makeQuery("SELECT * FROM comments;", "all_comments");
 // makeQuery("SELECT * FROM topics;", "all_topics");
 // makeQuery("SELECT * FROM users;", "all_users");

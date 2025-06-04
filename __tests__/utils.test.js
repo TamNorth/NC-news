@@ -169,7 +169,7 @@ describe("writeInsertStrings", () => {
   });
 });
 
-describe.only("deepCopyTable", () => {
+describe("deepCopyTable", () => {
   const input = [
     {
       property1: "string1",
