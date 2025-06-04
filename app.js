@@ -1,7 +1,5 @@
-const db = require("./db/connection.js");
 const express = require("express");
 const app = express();
-
 const { getEndpoints, getTopics, getArticlesInfo } = require("./controllers");
 
 app.get("/api", (req, res) => getEndpoints(req, res));
