@@ -1,0 +1,1 @@
+exports.getArticlesInfo = require("./getArticlesInfo");

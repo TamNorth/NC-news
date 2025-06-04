@@ -4,6 +4,7 @@ const data = require("../db/data/test-data/index.js");
 const db = require("../db/connection.js");
 const request = require("supertest");
 const app = require("../app.js");
+const { makeQuery } = require("../db/seeds/utils.js");
 /* Set up your test imports here */
 
 /* Set up your beforeEach & afterAll functions here */
@@ -61,6 +62,7 @@ describe("GET /api/articles", () => {
               article_img_url,
               comment_count,
             } = article;
+            console.log(articles);
             expect(typeof article_id).toBe("number");
             expect(typeof author).toBe("string");
             expect(typeof title).toBe("string");
