@@ -9,14 +9,14 @@ const getArticlesInfo = async (req, res) => {
     articles.forEach((article) => {
       delete article.body;
     });
-    appendPropertyByLookup(
+    const articlesWithCommentCount = appendPropertyByLookup(
       articles,
       "article_id",
       "comment_count",
       commentCountLookup
     );
-    sortArticlesByDate(articles);
-    res.status(200).send({ articles: articles });
+    sortArticlesByDate(articlesWithCommentCount);
+    res.status(200).send({ articles: articlesWithCommentCount });
   } catch {
     if (err) console.log(err);
   }

@@ -3,6 +3,7 @@ const {
   prepareDataForPgFormat,
   writeInsertStrings,
 } = require("../db/seeds/utils");
+const { deepCopyTable } = require("../utils");
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
@@ -165,5 +166,53 @@ describe("writeInsertStrings", () => {
       indexOfSlice + sliceSearchTerm.length + expected.length
     );
     expect(slice).toBe(expected);
+  });
+});
+
+describe.only("deepCopyTable", () => {
+  const input = [
+    {
+      property1: "string1",
+      property2: 1,
+    },
+    {
+      property1: "string2",
+      property2: 2,
+    },
+    {
+      property1: "string3",
+      property2: 3,
+    },
+  ];
+  const inputCopy = [
+    {
+      property1: "string1",
+      property2: 1,
+    },
+    {
+      property1: "string2",
+      property2: 2,
+    },
+    {
+      property1: "string3",
+      property2: 3,
+    },
+  ];
+  const actual = deepCopyTable(input);
+  test("returns an identical copy of an array of objects", () => {
+    expect(actual).toEqual(actual);
+  });
+  test("returns a new array", () => {
+    expect(actual).not.toBe(input);
+  });
+  test("returns new objects", () => {
+    actual.forEach((item) => {
+      expect(item).not.toBe(input[0]);
+      expect(item).not.toBe(input[1]);
+      expect(item).not.toBe(input[2]);
+    });
+  });
+  test("does not mutate the input", () => {
+    expect(input).toEqual(inputCopy);
   });
 });

@@ -1,5 +1,6 @@
 const db = require("../connection");
 const { convertTimestampToDate, writeInsertStrings } = require("./utils");
+const { appendPropertyByLookup } = require("../../utils");
 
 const seed = ({
   topicData,
@@ -68,12 +69,20 @@ const seed = ({
       for (let article of rows) {
         articleIdLookup[article.title] = article.article_id;
       }
-      const preparedCommentData = commentData.map(({ ...commentKeys }) => {
-        let commentCopy = { ...commentKeys };
-        commentCopy.article_id = articleIdLookup[commentCopy.article_title];
-        delete commentCopy.article_title;
-        return convertTimestampToDate(commentCopy);
-      });
+      const commentsWithArticleIds = appendPropertyByLookup(
+        commentData,
+        "article_title",
+        "article_id",
+        articleIdLookup
+      );
+      const preparedCommentData = commentsWithArticleIds.map(
+        ({ ...commentKeys }) => {
+          let commentCopy = { ...commentKeys };
+          // commentCopy.article_id = articleIdLookup[commentCopy.article_title];
+          delete commentCopy.article_title;
+          return convertTimestampToDate(commentCopy);
+        }
+      );
       return db.query(writeInsertStrings({ comments: preparedCommentData }));
     });
 };
