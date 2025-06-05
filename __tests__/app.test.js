@@ -62,7 +62,6 @@ describe("GET /api/articles", () => {
               article_img_url,
               comment_count,
             } = article;
-            // console.log(articles);
             expect(typeof article_id).toBe("number");
             expect(typeof author).toBe("string");
             expect(typeof title).toBe("string");
@@ -78,7 +77,6 @@ describe("GET /api/articles", () => {
       return request(app)
         .get("/api/articles")
         .then(({ body: { articles } }) => {
-          // console.log(articles);
           for (let i = 1; i < articles.length; i++) {
             const currentArticleDate = Number(
               articles[i].created_at.split(/[\-T:\.Z]/).join("")
@@ -90,5 +88,21 @@ describe("GET /api/articles", () => {
           }
         });
     });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("200: Responds with an object with an array of all user objects on the key of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        expect(users).not.toHaveLength(0);
+        users.forEach((user) => {
+          expect(typeof user.username).toBe("string");
+          expect(typeof user.name).toBe("string");
+          expect(typeof user.avatar_url).toBe("string");
+        });
+      });
   });
 });
