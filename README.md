@@ -1,3 +1,7 @@
+To do:
+- move sortArticlesByDate to utils
+- refactor getArticlesById with model func
+
 # NC News Seeding
 
 In order to seed this database for testing and development, you need to create two .env files that are not included in the github package for security reasons. Follow the instructions below:

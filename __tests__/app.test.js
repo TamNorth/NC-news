@@ -90,6 +90,7 @@ describe("GET /api/articles{*}", () => {
       });
     });
   });
+
   describe("GET /api/articles/:article_id", () => {
     test("200: Responds with an object with the specified article object on a key of article", () => {
       return request(app)
@@ -117,6 +118,47 @@ describe("GET /api/articles{*}", () => {
     test("404: When specified :article_id does not exist, responds with an error message", () => {
       return request(app)
         .get("/api/articles/10000")
+        .expect(404)
+        .then(({ body: { message } }) => {
+          expect(message).toBe("No article found for article_id: 10000");
+        });
+    });
+  });
+
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("200: Responds with an object with an array of comments, on a key of comments", () => {
+      return request(app)
+        .get("/api/articles/6/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).not.toHaveLength(0);
+          comments.forEach((comment) => {
+            expect(typeof comment.comment_id).toBe("number");
+            expect(typeof comment.votes).toBe("number");
+            expect(typeof comment.created_at).toBe("string");
+            expect(typeof comment.author).toBe("string");
+            expect(typeof comment.body).toBe("string");
+            expect(typeof comment.article_id).toBe("number");
+          });
+        });
+    });
+
+    test("204: When specified :article_id has no comments, responds with an error message", () => {
+      return request(app).get("/api/articles/2/comments").expect(204);
+    });
+
+    test("400: When :article_id is not a number, responds with an error message", () => {
+      return request(app)
+        .get("/api/articles/notanumber/comments")
+        .expect(400)
+        .then(({ body: { message } }) => {
+          expect(message).toBe("Bad request");
+        });
+    });
+
+    test("404: When specified :article_id does not exist, responds with an error message", () => {
+      return request(app)
+        .get("/api/articles/10000/comments")
         .expect(404)
         .then(({ body: { message } }) => {
           expect(message).toBe("No article found for article_id: 10000");

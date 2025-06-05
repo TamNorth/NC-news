@@ -6,6 +6,7 @@ const {
   getArticles,
   getUsers,
   getArticleById,
+  getCommentsByArticle,
 } = require("./controllers");
 const {
   handleBadRequest,
@@ -25,10 +26,14 @@ app.get("/api/articles/:article_id", (req, res, next) =>
   getArticleById(req, res, next)
 );
 
+app.get("/api/articles/:article_id/comments", (req, res, next) =>
+  getCommentsByArticle(req, res, next)
+);
+
 app.use((err, req, res, next) => handleBadRequest(err, req, res, next));
 
 app.use((err, req, res, next) => handleCustomErrors(err, req, res, next));
 
-app.use((err, req, res, next) => handleOtherErrors(err, req, res, next));
+// app.use((err, req, res, next) => handleOtherErrors(err, req, res, next));
 
 module.exports = app;
