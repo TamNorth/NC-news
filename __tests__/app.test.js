@@ -36,56 +36,90 @@ describe("GET /api/topics", () => {
       });
   });
 });
-
-describe("GET /api/articles", () => {
-  describe("200: Responds with an object containing an array of all articles", () => {
-    test("Responds with status code 200 and a non-empty array on the key of articles", () => {
-      return request(app)
-        .get("/api/articles")
-        .expect(200)
-        .then(({ body: { articles } }) => {
-          expect(articles).not.toHaveLength(0);
-        });
-    });
-    test("Each article object contains all the articles columns, minus the body and plus a comment count", () => {
-      return request(app)
-        .get("/api/articles")
-        .then(({ body: { articles } }) => {
-          articles.forEach((article) => {
-            const {
-              article_id,
-              author,
-              title,
-              topic,
-              created_at,
-              votes,
-              article_img_url,
-              comment_count,
-            } = article;
-            expect(typeof article_id).toBe("number");
-            expect(typeof author).toBe("string");
-            expect(typeof title).toBe("string");
-            expect(typeof topic).toBe("string");
-            expect(typeof created_at).toBe("string");
-            expect(typeof votes).toBe("number");
-            expect(typeof article_img_url).toBe("string");
-            expect(typeof comment_count).toBe("number");
+describe("GET /api/articles{*}", () => {
+  describe("GET /api/articles", () => {
+    describe("200: Responds with an object containing an array of all articles", () => {
+      test("Responds with status code 200 and a non-empty array on the key of articles", () => {
+        return request(app)
+          .get("/api/articles")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).not.toHaveLength(0);
           });
+      });
+      test("Each article object contains all the articles columns, minus the body and plus a comment count", () => {
+        return request(app)
+          .get("/api/articles")
+          .then(({ body: { articles } }) => {
+            articles.forEach((article) => {
+              const {
+                article_id,
+                author,
+                title,
+                topic,
+                created_at,
+                votes,
+                article_img_url,
+                comment_count,
+              } = article;
+              expect(typeof article_id).toBe("number");
+              expect(typeof author).toBe("string");
+              expect(typeof title).toBe("string");
+              expect(typeof topic).toBe("string");
+              expect(typeof created_at).toBe("string");
+              expect(typeof votes).toBe("number");
+              expect(typeof article_img_url).toBe("string");
+              expect(typeof comment_count).toBe("number");
+            });
+          });
+      });
+      test("Articles are ordered by date in descending order", () => {
+        return request(app)
+          .get("/api/articles")
+          .then(({ body: { articles } }) => {
+            for (let i = 1; i < articles.length; i++) {
+              const currentArticleDate = Number(
+                articles[i].created_at.split(/[\-T:\.Z]/).join("")
+              );
+              const previousArticleDate = Number(
+                articles[i - 1].created_at.split(/[\-T:\.Z]/).join("")
+              );
+              expect(previousArticleDate >= currentArticleDate).toBe(true);
+            }
+          });
+      });
+    });
+  });
+  describe("GET /api/articles/:article_id", () => {
+    test("200: Responds with an object with the specified article object on a key of article", () => {
+      return request(app)
+        .get("/api/articles/3")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article.article_id).toBe(3);
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.body).toBe("string");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
         });
     });
-    test("Articles are ordered by date in descending order", () => {
+    test("400: When :article_id is not a number, responds with an error message", () => {
       return request(app)
-        .get("/api/articles")
-        .then(({ body: { articles } }) => {
-          for (let i = 1; i < articles.length; i++) {
-            const currentArticleDate = Number(
-              articles[i].created_at.split(/[\-T:\.Z]/).join("")
-            );
-            const previousArticleDate = Number(
-              articles[i - 1].created_at.split(/[\-T:\.Z]/).join("")
-            );
-            expect(previousArticleDate >= currentArticleDate).toBe(true);
-          }
+        .get("/api/articles/notanumber")
+        .expect(400)
+        .then(({ body: { message } }) => {
+          expect(message).toBe("Bad request");
+        });
+    });
+    test("404: When specified :article_id does not exist, responds with an error message", () => {
+      return request(app)
+        .get("/api/articles/10000")
+        .expect(404)
+        .then(({ body: { message } }) => {
+          expect(message).toBe("No article found for article_id: 10000");
         });
     });
   });

@@ -1,8 +1,11 @@
 const db = require("../db/connection.js");
-const { getCommentCountLookup, sortArticlesByDate } = require("../models");
+const {
+  getCommentCountLookup,
+  sortArticlesByDate,
+} = require("../models/index.js");
 const { appendPropertyByLookup } = require("../utils.js");
 
-const getArticlesInfo = async (req, res) => {
+const getArticles = async (req, res) => {
   try {
     const { rows: articles } = await db.query(`SELECT * FROM articles;`);
     const commentCountLookup = await getCommentCountLookup();
@@ -24,4 +27,4 @@ const getArticlesInfo = async (req, res) => {
   }
 };
 
-module.exports = getArticlesInfo;
+module.exports = getArticles;
