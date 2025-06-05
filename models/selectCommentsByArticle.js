@@ -8,7 +8,6 @@ const selectCommentsByArticle = (articleId, res, next) => {
     )
     .then(({ rows }) => {
       if (rows.length) {
-        console.log(rows);
         return rows;
       } else {
         return Promise.reject({
