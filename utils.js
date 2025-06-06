@@ -33,3 +33,22 @@ exports.makeQuery = (query, fileName) => {
     });
   });
 };
+
+exports.checkArticleExists = (articleId) => {
+  return db
+    .query(`SELECT COUNT(*) FROM articles WHERE article_id = $1;`, [articleId])
+    .then(({ rows: [{ count }] }) => {
+      if (+count) {
+        return 200;
+      } else {
+        return 404;
+      }
+    })
+    .catch((err) => {
+      if (err.code === "22P02") {
+        return 400;
+      } else {
+        return err;
+      }
+    });
+};

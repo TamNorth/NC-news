@@ -3,7 +3,13 @@ const {
   prepareDataForPgFormat,
   writeInsertStrings,
 } = require("../db/seeds/utils");
-const { deepCopyTable } = require("../utils");
+const { deepCopyTable, checkArticleExists } = require("../utils");
+const db = require("../db/connection");
+const data = require("../db/data/test-data/index.js");
+const seed = require("../db/seeds/seed.js");
+
+beforeAll(() => seed(data));
+afterAll(() => db.end());
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
@@ -214,5 +220,27 @@ describe("deepCopyTable", () => {
   });
   test("does not mutate the input", () => {
     expect(input).toEqual(inputCopy);
+  });
+});
+
+describe("checkArticleExists", () => {
+  test("returns a promise", () => {});
+
+  test("resolves to 400 if the article id is not provided as an integer", () => {
+    return checkArticleExists("notanumber").then((result) => {
+      expect(result).toBe(400);
+    });
+  });
+
+  test("otherwise resolves 404 if the article does not exist", () => {
+    return checkArticleExists(10000).then((result) => {
+      expect(result).toBe(404);
+    });
+  });
+
+  test("resolves to 200 if the article exists", () => {
+    return checkArticleExists(1).then((result) => {
+      expect(result).toBe(200);
+    });
   });
 });

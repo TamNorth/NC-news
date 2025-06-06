@@ -143,8 +143,13 @@ describe("GET /api/articles{*}", () => {
         });
     });
 
-    test("204: When specified :article_id has no comments, responds with an error message", () => {
-      return request(app).get("/api/articles/2/comments").expect(204);
+    test("200: When specified :article_id has no comments, responds with an empty array", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).toEqual([]);
+        });
     });
 
     test("400: When :article_id is not a number, responds with an error message", () => {
