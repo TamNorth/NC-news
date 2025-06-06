@@ -1,30 +1,11 @@
-const db = require("../db/connection.js");
-const {
-  getCommentCountLookup,
-  sortArticlesByDate,
-} = require("../models/index.js");
-const { appendPropertyByLookup } = require("../utils.js");
+const selectArticles = require("../models/selectArticles");
 
-const getArticles = async (req, res) => {
-  try {
-    const { rows: articles } = await db.query(`SELECT * FROM articles;`);
-    const commentCountLookup = await getCommentCountLookup();
-    articles.forEach((article) => {
-      delete article.body;
-    });
-    const articlesWithCommentCount = appendPropertyByLookup(
-      articles,
-      "article_id",
-      "comment_count",
-      commentCountLookup
-    );
-    const articlesByDateWithCommentCount = sortArticlesByDate(
-      articlesWithCommentCount
-    );
-    res.status(200).send({ articles: articlesByDateWithCommentCount });
-  } catch {
-    if (err) console.log(err);
-  }
+const getArticles = async (req, res, next) => {
+  return selectArticles()
+    .then((rows) => {
+      res.status(200).send({ articles: rows });
+    })
+    .catch((err) => next(err));
 };
 
 module.exports = getArticles;

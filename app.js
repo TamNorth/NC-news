@@ -18,7 +18,7 @@ app.get("/api", (req, res) => getEndpoints(req, res));
 
 app.get("/api/topics", (req, res) => getTopics(req, res));
 
-app.get("/api/articles", (req, res) => getArticles(req, res));
+app.get("/api/articles", (req, res, next) => getArticles(req, res, next));
 
 app.get("/api/users", (req, res) => getUsers(req, res));
 
