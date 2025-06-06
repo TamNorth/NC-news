@@ -24,6 +24,7 @@ exports.handleCustomErrors = (err, req, res, next) => {
       message: message,
     });
   } else {
+    console.log(err);
     next(err);
   }
 };

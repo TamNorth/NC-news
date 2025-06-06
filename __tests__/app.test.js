@@ -256,7 +256,31 @@ describe("POST /api/articles/:article_id/comments", () => {
       })
       .expect(404)
       .then(({ body: { message } }) => {
-        expect(message).toBe("Not found: nothing at article_id: 10000");
+        expect(message).toBe("Not found");
+      });
+  });
+  test("404: when username does not match an existing username, responds with an error", () => {
+    return request(app)
+      .post(`/api/articles/${articleId}/comments`)
+      .send({
+        username: "doesn't go here",
+        body: testCommentBody,
+      })
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Not found");
+      });
+  });
+  test("400: when body is not a string, responds with an error", () => {
+    return request(app)
+      .post(`/api/articles/${articleId}/comments`)
+      .send({
+        username: testUsername,
+        body: [487923],
+      })
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Bad request: comment body must be a string");
       });
   });
 });
