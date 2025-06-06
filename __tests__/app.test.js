@@ -112,7 +112,7 @@ describe("GET /api/articles{*}", () => {
         .get("/api/articles/notanumber")
         .expect(400)
         .then(({ body: { message } }) => {
-          expect(message).toBe("Bad request");
+          expect(message).toBe("Bad request: article_id must be an integer");
         });
     });
     test("404: When specified :article_id does not exist, responds with an error message", () => {
@@ -120,7 +120,7 @@ describe("GET /api/articles{*}", () => {
         .get("/api/articles/10000")
         .expect(404)
         .then(({ body: { message } }) => {
-          expect(message).toBe("No article found for article_id: 10000");
+          expect(message).toBe("Not found: nothing at article_id: 10000");
         });
     });
   });
@@ -157,7 +157,7 @@ describe("GET /api/articles{*}", () => {
         .get("/api/articles/notanumber/comments")
         .expect(400)
         .then(({ body: { message } }) => {
-          expect(message).toBe("Bad request");
+          expect(message).toBe("Bad request: article_id must be an integer");
         });
     });
 
@@ -166,7 +166,7 @@ describe("GET /api/articles{*}", () => {
         .get("/api/articles/10000/comments")
         .expect(404)
         .then(({ body: { message } }) => {
-          expect(message).toBe("No article found for article_id: 10000");
+          expect(message).toBe("Not found: nothing at article_id: 10000");
         });
     });
   });
@@ -184,6 +184,79 @@ describe("GET /api/users", () => {
           expect(typeof user.name).toBe("string");
           expect(typeof user.avatar_url).toBe("string");
         });
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  const testUsername = "lurker";
+  const testCommentBody = "This is a test comment";
+  const articleId = 6;
+  describe("201:", () => {
+    test("posts a new comment to the specified article", () => {
+      return request(app)
+        .post(`/api/articles/${articleId}/comments`)
+        .send({
+          username: testUsername,
+          body: testCommentBody,
+        })
+        .then(() => {
+          return db.query(
+            "SELECT * FROM comments WHERE author = $1 AND body = $2;",
+            [testUsername, testCommentBody]
+          );
+        })
+        .then(({ rows: [comment] }) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("object");
+          expect(comment.author).toBe(testUsername);
+          expect(comment.body).toBe(testCommentBody);
+          expect(comment.article_id).toBe(articleId);
+        });
+    });
+
+    test("responds with the posted article", () => {
+      return request(app)
+        .post(`/api/articles/${articleId}/comments`)
+        .send({
+          username: testUsername,
+          body: testCommentBody,
+        })
+        .expect(201)
+        .then(({ body: response }) => {
+          expect(typeof response.comment_id).toBe("number");
+          expect(typeof response.votes).toBe("number");
+          expect(typeof response.created_at).toBe("string");
+          expect(typeof response.author).toBe("string");
+          expect(typeof response.body).toBe("string");
+          expect(typeof response.article_id).toBe("number");
+        });
+    });
+  });
+  test("400: when :article_id is not a number, responds with an error message", () => {
+    return request(app)
+      .post("/api/articles/notanumber/comments")
+      .send({
+        username: testUsername,
+        body: testCommentBody,
+      })
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Bad request: article_id must be an integer");
+      });
+  });
+
+  test("404: when :article_id does not exist, responds with an error message", () => {
+    return request(app)
+      .post("/api/articles/10000/comments")
+      .send({
+        username: testUsername,
+        body: testCommentBody,
+      })
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Not found: nothing at article_id: 10000");
       });
   });
 });

@@ -20,7 +20,7 @@ const selectArticles = () => {
       return rows;
     })
     .catch((err) => {
-      return err;
+      next(err);
     });
 };
 

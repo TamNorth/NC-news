@@ -1,6 +1,8 @@
-exports.handleBadRequest = (err, req, res, next) => {
+exports.handleDatabaseErrors = (err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ message: "Bad request" });
+    res.status(400).send({ message: "Bad request: " + err.message });
+  } else if (err.code === "23503") {
+    res.status(404).send({ message: "Not found: " + err.message });
   } else {
     next(err);
   }
@@ -9,7 +11,20 @@ exports.handleBadRequest = (err, req, res, next) => {
 exports.handleCustomErrors = (err, req, res, next) => {
   if (err.status && err.message) {
     res.status(err.status).send({ message: err.message });
+  } else if (err.status === 404) {
+    let message = "Not found";
+    if (err.params) {
+      message +=
+        ": nothing at " +
+        Object.keys(err.params) +
+        ": " +
+        Object.values(err.params);
+    }
+    res.status(err.status).send({
+      message: message,
+    });
   } else {
+    console.log(err);
     next(err);
   }
 };

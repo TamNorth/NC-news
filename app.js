@@ -7,12 +7,15 @@ const {
   getUsers,
   getArticleById,
   getCommentsByArticle,
+  postCommentOnArticle,
 } = require("./controllers");
 const {
-  handleBadRequest,
+  handleDatabaseErrors,
   handleCustomErrors,
   handleOtherErrors,
 } = require("./error-handlers");
+
+app.use(express.json());
 
 app.get("/api", (req, res) => getEndpoints(req, res));
 
@@ -30,7 +33,11 @@ app.get("/api/articles/:article_id/comments", (req, res, next) =>
   getCommentsByArticle(req, res, next)
 );
 
-app.use((err, req, res, next) => handleBadRequest(err, req, res, next));
+app.post("/api/articles/:article_id/comments", (req, res, next) =>
+  postCommentOnArticle(req, res, next)
+);
+
+app.use((err, req, res, next) => handleDatabaseErrors(err, req, res, next));
 
 app.use((err, req, res, next) => handleCustomErrors(err, req, res, next));
 

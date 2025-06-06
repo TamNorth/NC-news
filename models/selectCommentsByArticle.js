@@ -7,7 +7,10 @@ const selectCommentsByArticle = (articleId, next) => {
       return rows;
     })
     .catch((err) => {
-      if (err) next(err);
+      if (err.code === "22P02") {
+        err.message = `article_id must be an integer`;
+      }
+      next(err);
     });
 };
 
