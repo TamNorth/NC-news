@@ -337,12 +337,13 @@ describe("PATCH /api/articles/:article_id", () => {
         });
     });
 
-    test("responds with the updated article", () => {
+    test("responds with 200 and the updated article", () => {
       const articleId = 6;
       const votesToAdd = 12;
       return request(app)
         .patch(`/api/articles/${articleId}`)
         .send({ inc_votes: votesToAdd })
+        .expect(200)
         .then(({ body: { article } }) => {
           expect(article.article_id).toBe(articleId);
           expect(typeof article.author).toBe("string");
@@ -356,11 +357,72 @@ describe("PATCH /api/articles/:article_id", () => {
     });
   });
 
-  describe.skip("error handling", () => {
-    test("400: When :article_id is not a number, responds with an error message", () => {});
+  describe("error handling", () => {
+    test("400: When :article_id is not a number, responds with an error message", () => {
+      const articleId = "notanumber";
+      const votesToAdd = 12;
+      return request(app)
+        .patch(`/api/articles/${articleId}`)
+        .send({ inc_votes: votesToAdd })
+        .expect(400)
+        .then(({ body: { message } }) => {
+          expect(message).toBe("Bad request: article_id must be an integer");
+        });
+    });
 
-    test("404: When specified :article_id does not exist, responds with an error message", () => {});
+    test("404: When specified :article_id does not exist, responds with an error message", () => {
+      const articleId = 10000;
+      const votesToAdd = 12;
+      return request(app)
+        .patch(`/api/articles/${articleId}`)
+        .send({ inc_votes: votesToAdd })
+        .expect(404)
+        .then(({ body: { message } }) => {
+          expect(message).toBe("Not found: nothing at article_id: 10000");
+        });
+    });
 
-    test("400: When an integer number of votes is not supplied on a key of inc_votes, responds with an error message", () => {});
+    test("400: When an integer number of votes is not supplied, does not modify the article and responds with an error message", () => {
+      const articleId = 6;
+      let initialVotes = 0;
+      const votesToAdd = 12.5;
+      return db
+        .query(`SELECT votes FROM articles WHERE article_id = $1;`, [articleId])
+        .then(({ rows: [{ votes }] }) => {
+          initialVotes = votes;
+          return request(app)
+            .patch(`/api/articles/${articleId}`)
+            .send({ inc_votes: votesToAdd })
+            .expect(400);
+        })
+        .then(({ body: { message } }) => {
+          expect(message).toBe(
+            "Bad request: votes to add must be supplied in the format {inc_votes: <votes>} where <votes> is a number"
+          );
+          return db.query(
+            `SELECT votes 
+              FROM articles 
+              WHERE article_id = $1;`,
+            [articleId]
+          );
+        })
+        .then(({ rows: [{ votes }] }) => {
+          expect(votes).toBe(initialVotes);
+        });
+    });
+
+    test("400: When there is no key of inc_votes, responds with an error message", () => {
+      const articleId = 6;
+      const votesToAdd = 12;
+      return request(app)
+        .patch(`/api/articles/${articleId}`)
+        .send({ anotherKey: votesToAdd })
+        .expect(400)
+        .then(({ body: { message } }) => {
+          expect(message).toBe(
+            "Bad request: votes to add must be supplied in the format {inc_votes: <votes>} where <votes> is a number"
+          );
+        });
+    });
   });
 });
