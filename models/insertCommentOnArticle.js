@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-const insertCommentOnArticle = (articleId, comment, next) => {
+const insertCommentOnArticle = (articleId, comment) => {
   const { username, body } = comment;
   return db
     .query(
@@ -12,11 +12,11 @@ const insertCommentOnArticle = (articleId, comment, next) => {
     })
     .catch((err) => {
       if (err.code === "23503") {
-        next({ status: 404 });
+        err.status = 404;
       } else if (err.code === "22P02") {
         err.message = `article_id must be an integer`;
       }
-      next(err);
+      throw err;
     });
 };
 

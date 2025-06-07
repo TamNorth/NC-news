@@ -11,9 +11,9 @@ const postCommentOnArticle = async (req, res, next) => {
         message: "Bad request: comment body must be a string",
       });
     }
-    const response = await insertCommentOnArticle(articleId, comment, next);
+    const response = await insertCommentOnArticle(articleId, comment);
     res.status(201).send(response);
-  } catch {
+  } catch (err) {
     next(err);
   }
 };

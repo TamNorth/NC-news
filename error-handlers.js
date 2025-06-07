@@ -9,9 +9,7 @@ exports.handleDatabaseErrors = (err, req, res, next) => {
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
-  if (err.status && err.message) {
-    res.status(err.status).send({ message: err.message });
-  } else if (err.status === 404) {
+  if (err.status === 404) {
     let message = "Not found";
     if (err.params) {
       message +=
@@ -23,6 +21,8 @@ exports.handleCustomErrors = (err, req, res, next) => {
     res.status(err.status).send({
       message: message,
     });
+  } else if (err.status && err.message) {
+    res.status(err.status).send({ message: err.message });
   } else {
     console.log(err);
     next(err);
