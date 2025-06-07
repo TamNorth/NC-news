@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-const deleteComment = (commentId, next) => {
+const deleteComment = (commentId) => {
   return db
     .query(
       `DELETE FROM comments 
@@ -15,7 +15,7 @@ const deleteComment = (commentId, next) => {
       if (err.code === "22P02") {
         err.message = `comment_id must be an integer`;
       }
-      next(err);
+      throw err;
     });
 };
 

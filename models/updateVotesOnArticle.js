@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-const updateVotesOnArticle = (votes, articleId, next) => {
+const updateVotesOnArticle = (votes, articleId) => {
   return db
     .query(
       `UPDATE articles
@@ -16,7 +16,7 @@ const updateVotesOnArticle = (votes, articleId, next) => {
       if (err.code === "22P02") {
         err.message = `article_id must be an integer`;
       }
-      next(err);
+      throw err;
     });
 };
 

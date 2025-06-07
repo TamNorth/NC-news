@@ -15,14 +15,16 @@ const patchVotesOnArticle = async (req, res, next) => {
     }
     const [status, response] = await Promise.all([
       checkArticleExists(articleId),
-      updateVotesOnArticle(inc_votes, articleId, next),
+      updateVotesOnArticle(inc_votes, articleId),
     ]);
     if (status === 404) {
       return Promise.reject({ status: status, params: req.params });
+    } else if (status === 200) {
+      res.status(status).send({ article: response });
+    } else {
+      return Promise.reject({ status: 500 });
     }
-    res.status(status).send({ article: response });
-  } catch {
-    console.log("controller: " + err);
+  } catch (err) {
     next(err);
   }
 };

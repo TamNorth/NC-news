@@ -67,7 +67,7 @@ exports.checkCommentExists = (commentId) => {
       if (err.code === "22P02") {
         return 400;
       } else {
-        return err;
+        throw err;
       }
     });
 };

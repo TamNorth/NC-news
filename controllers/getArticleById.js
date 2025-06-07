@@ -1,7 +1,7 @@
 const { selectArticleById } = require("../models");
 
 const getArticleById = (req, res, next) => {
-  return selectArticleById(req.params, next)
+  return selectArticleById(req.params)
     .then((article) => {
       res.status(200).send({ article: article });
     })
