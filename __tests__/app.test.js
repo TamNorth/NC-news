@@ -37,6 +37,7 @@ describe("GET /api/topics", () => {
       });
   });
 });
+
 describe("GET /api/articles{*}", () => {
   describe("GET /api/articles", () => {
     describe("200: Responds with an object containing an array of all articles", () => {
@@ -74,6 +75,7 @@ describe("GET /api/articles{*}", () => {
             });
           });
       });
+
       test("Articles are ordered by date in descending order", () => {
         return request(app)
           .get("/api/articles")
@@ -93,11 +95,12 @@ describe("GET /api/articles{*}", () => {
   });
 
   describe("GET /api/articles/:article_id", () => {
-    test("200: Responds with an object with the specified article object on a key of article", () => {
+    test("200: Responds with an object with the specified article object on a key of article, with a comment count", () => {
       return request(app)
         .get("/api/articles/3")
         .expect(200)
         .then(({ body: { article } }) => {
+          console.log(article);
           expect(article.article_id).toBe(3);
           expect(typeof article.author).toBe("string");
           expect(typeof article.title).toBe("string");
@@ -106,8 +109,10 @@ describe("GET /api/articles{*}", () => {
           expect(typeof article.created_at).toBe("string");
           expect(typeof article.votes).toBe("number");
           expect(typeof article.article_img_url).toBe("string");
+          expect(typeof article.comment_count).toBe("number");
         });
     });
+
     test("400: When :article_id is not a number, responds with an error message", () => {
       return request(app)
         .get("/api/articles/notanumber")
@@ -116,6 +121,7 @@ describe("GET /api/articles{*}", () => {
           expect(message).toBe("Bad request: article_id must be an integer");
         });
     });
+
     test("404: When specified :article_id does not exist, responds with an error message", () => {
       return request(app)
         .get("/api/articles/10000")
