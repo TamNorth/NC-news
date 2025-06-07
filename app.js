@@ -9,6 +9,7 @@ const {
   getCommentsByArticle,
   postCommentOnArticle,
   patchVotesOnArticle,
+  removeComment,
 } = require("./controllers");
 const {
   handleDatabaseErrors,
@@ -40,6 +41,10 @@ app.post("/api/articles/:article_id/comments", (req, res, next) =>
 
 app.patch("/api/articles/:article_id", (req, res, next) =>
   patchVotesOnArticle(req, res, next)
+);
+
+app.delete("/api/comments/:comment_id", (req, res, next) =>
+  removeComment(req, res, next)
 );
 
 app.use((err, req, res, next) => handleDatabaseErrors(err, req, res, next));

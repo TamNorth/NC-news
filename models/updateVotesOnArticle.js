@@ -13,8 +13,6 @@ const updateVotesOnArticle = (votes, articleId, next) => {
       return article;
     })
     .catch((err) => {
-      console.log("model:");
-      console.log(err);
       if (err.code === "22P02") {
         err.message = `article_id must be an integer`;
       }

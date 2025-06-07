@@ -5,6 +5,7 @@ const db = require("../db/connection.js");
 const request = require("supertest");
 const app = require("../app.js");
 const { makeQuery } = require("../db/seeds/utils.js");
+const { checkArticleExists } = require("../utils.js");
 /* Set up your test imports here */
 
 /* Set up your beforeEach & afterAll functions here */
@@ -424,5 +425,46 @@ describe("PATCH /api/articles/:article_id", () => {
           );
         });
     });
+  });
+});
+
+describe.only("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes the specified comment", () => {
+    const commentId = 3;
+    let initialNumOfComments = 0;
+    return db
+      .query(`SELECT comment_id FROM comments`)
+      .then(({ rows }) => {
+        initialNumOfComments = rows.length;
+        expect(rows).toContainEqual({ comment_id: commentId });
+        return request(app).delete(`/api/comments/${commentId}`).expect(204);
+      })
+      .then(() => {
+        return db.query(`SELECT comment_id FROM comments`);
+      })
+      .then(({ rows }) => {
+        expect(rows.length).toBe(initialNumOfComments - 1);
+        expect(rows).not.toContainEqual({ comment_id: commentId });
+      });
+  });
+
+  test("400: when :comment_id is not a number, responds with an error", () => {
+    const commentId = "notanumber";
+    return request(app)
+      .delete(`/api/comments/${commentId}`)
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Bad request: comment_id must be an integer");
+      });
+  });
+
+  test.skip("404: otherwise, when :comment_id does not exist, responds with an error message", () => {
+    const commentId = 10000;
+    return request(app)
+      .delete(`/api/comments/${commentId}`)
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Not found: nothing at comment_id: 10000");
+      });
   });
 });

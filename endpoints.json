@@ -97,6 +97,9 @@
       }
     }
   },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the comment associated with the given comment_id; responds with status code 204 and no content"
+  },
   "N/A": {
     "description": "",
     "exampleResponse": {}
