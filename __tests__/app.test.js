@@ -337,7 +337,23 @@ describe("PATCH /api/articles/:article_id", () => {
         });
     });
 
-    test("responds with the updated article", () => {});
+    test("responds with the updated article", () => {
+      const articleId = 6;
+      const votesToAdd = 12;
+      return request(app)
+        .patch(`/api/articles/${articleId}`)
+        .send({ inc_votes: votesToAdd })
+        .then(({ body: { article } }) => {
+          expect(article.article_id).toBe(articleId);
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.body).toBe("string");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+        });
+    });
   });
 
   describe.skip("error handling", () => {

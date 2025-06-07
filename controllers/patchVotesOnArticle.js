@@ -9,7 +9,7 @@ const patchVotesOnArticle = async (req, res, next) => {
       //   checkArticleExists(articleId),
       updateVotesOnArticle(inc_votes, articleId),
     ]);
-    res.status(200).send("sup");
+    res.status(200).send({ article: response });
   } catch {
     console.log("controller: " + err);
     next(err);

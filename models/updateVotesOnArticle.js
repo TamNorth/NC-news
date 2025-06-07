@@ -5,10 +5,13 @@ const updateVotesOnArticle = (votes, articleId) => {
     .query(
       `UPDATE articles
             SET votes = votes + $1
-            WHERE article_id = $2;`,
+            WHERE article_id = $2
+            RETURNING *;`,
       [votes, articleId]
     )
-    .then(() => {})
+    .then(({ rows: [article] }) => {
+      return article;
+    })
     .catch((err) => {
       console.log("model: " + err);
       next(err);
