@@ -428,7 +428,7 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe.only("DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("204: deletes the specified comment", () => {
     const commentId = 3;
     let initialNumOfComments = 0;

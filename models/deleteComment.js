@@ -4,11 +4,12 @@ const deleteComment = (commentId, next) => {
   return db
     .query(
       `DELETE FROM comments 
-        WHERE comment_id = $1;`,
+        WHERE comment_id = $1
+        RETURNING *;`,
       [commentId]
     )
-    .then(() => {
-      return true;
+    .then(({ rows }) => {
+      return rows;
     })
     .catch((err) => {
       if (err.code === "22P02") {
