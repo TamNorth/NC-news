@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-const selectCommentsByArticle = (articleId, next) => {
+const selectCommentsByArticle = (articleId) => {
   return db
     .query(`SELECT * FROM comments WHERE article_id = $1`, [articleId])
     .then(({ rows }) => {
@@ -10,7 +10,7 @@ const selectCommentsByArticle = (articleId, next) => {
       if (err.code === "22P02") {
         err.message = `article_id must be an integer`;
       }
-      next(err);
+      throw err;
     });
 };
 
