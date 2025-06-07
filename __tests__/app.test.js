@@ -284,3 +284,67 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  describe("200:", () => {
+    test("increments the vote count on the article by the given amount", () => {
+      const articleId = 6;
+      let initialVotes = 0;
+      const votesToAdd = 12;
+      return db
+        .query(`SELECT votes FROM articles WHERE article_id = $1;`, [articleId])
+        .then(({ rows: [{ votes }] }) => {
+          initialVotes = votes;
+          return request(app)
+            .patch(`/api/articles/${articleId}`)
+            .send({ inc_votes: votesToAdd });
+        })
+        .then(() => {
+          return db.query(
+            `SELECT votes 
+              FROM articles 
+              WHERE article_id = $1;`,
+            [articleId]
+          );
+        })
+        .then(({ rows: [{ votes }] }) => {
+          expect(votes).toBe(initialVotes + votesToAdd);
+        });
+    });
+
+    test("works for negative vote amounts", () => {
+      const articleId = 6;
+      let initialVotes = 0;
+      const votesToAdd = -3;
+      return db
+        .query(`SELECT votes FROM articles WHERE article_id = $1;`, [articleId])
+        .then(({ rows: [{ votes }] }) => {
+          initialVotes = votes;
+          return request(app)
+            .patch(`/api/articles/${articleId}`)
+            .send({ inc_votes: votesToAdd });
+        })
+        .then(() => {
+          return db.query(
+            `SELECT votes 
+              FROM articles 
+              WHERE article_id = $1;`,
+            [articleId]
+          );
+        })
+        .then(({ rows: [{ votes }] }) => {
+          expect(votes).toBe(initialVotes + votesToAdd);
+        });
+    });
+
+    test("responds with the updated article", () => {});
+  });
+
+  describe.skip("error handling", () => {
+    test("400: When :article_id is not a number, responds with an error message", () => {});
+
+    test("404: When specified :article_id does not exist, responds with an error message", () => {});
+
+    test("400: When an integer number of votes is not supplied on a key of inc_votes, responds with an error message", () => {});
+  });
+});

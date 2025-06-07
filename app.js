@@ -8,6 +8,7 @@ const {
   getArticleById,
   getCommentsByArticle,
   postCommentOnArticle,
+  patchVotesOnArticle,
 } = require("./controllers");
 const {
   handleDatabaseErrors,
@@ -35,6 +36,10 @@ app.get("/api/articles/:article_id/comments", (req, res, next) =>
 
 app.post("/api/articles/:article_id/comments", (req, res, next) =>
   postCommentOnArticle(req, res, next)
+);
+
+app.patch("/api/articles/:article_id", (req, res, next) =>
+  patchVotesOnArticle(req, res, next)
 );
 
 app.use((err, req, res, next) => handleDatabaseErrors(err, req, res, next));

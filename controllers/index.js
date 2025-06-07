@@ -5,3 +5,4 @@ exports.getUsers = require("./getUsers.js");
 exports.getArticleById = require("./getArticleById.js");
 exports.getCommentsByArticle = require("./getCommentsByArticle.js");
 exports.postCommentOnArticle = require("./postCommentOnArticle.js");
+exports.patchVotesOnArticle = require("./patchVotesOnArticle");
