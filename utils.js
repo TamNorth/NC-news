@@ -52,3 +52,22 @@ exports.checkArticleExists = (articleId) => {
       }
     });
 };
+
+exports.checkCommentExists = (commentId) => {
+  return db
+    .query(`SELECT COUNT(*) FROM comments WHERE comment_id = $1;`, [commentId])
+    .then(({ rows: [{ count }] }) => {
+      if (+count) {
+        return 200;
+      } else {
+        return 404;
+      }
+    })
+    .catch((err) => {
+      if (err.code === "22P02") {
+        return 400;
+      } else {
+        return err;
+      }
+    });
+};

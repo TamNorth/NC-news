@@ -3,7 +3,11 @@ const {
   prepareDataForPgFormat,
   writeInsertStrings,
 } = require("../db/seeds/utils");
-const { deepCopyTable, checkArticleExists } = require("../utils");
+const {
+  deepCopyTable,
+  checkArticleExists,
+  checkCommentExists,
+} = require("../utils");
 const db = require("../db/connection");
 const data = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
@@ -240,6 +244,26 @@ describe("checkArticleExists", () => {
 
   test("resolves to 200 if the article exists", () => {
     return checkArticleExists(1).then((result) => {
+      expect(result).toBe(200);
+    });
+  });
+});
+
+describe("checkCommentExists", () => {
+  test("resolves to 400 if the comment id is not provided as an integer", () => {
+    return checkCommentExists("notanumber").then((result) => {
+      expect(result).toBe(400);
+    });
+  });
+
+  test("otherwise resolves 404 if the comment does not exist", () => {
+    return checkCommentExists(10000).then((result) => {
+      expect(result).toBe(404);
+    });
+  });
+
+  test("resolves to 200 if the comment exists", () => {
+    return checkCommentExists(1).then((result) => {
       expect(result).toBe(200);
     });
   });
