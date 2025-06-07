@@ -428,7 +428,7 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe("DELETE /api/comments/:comment_id", () => {
+describe.only("DELETE /api/comments/:comment_id", () => {
   test("204: deletes the specified comment", () => {
     const commentId = 3;
     let initialNumOfComments = 0;
@@ -458,7 +458,7 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 
-  test.skip("404: otherwise, when :comment_id does not exist, responds with an error message", () => {
+  test("404: otherwise, when :comment_id does not exist, responds with an error message", () => {
     const commentId = 10000;
     return request(app)
       .delete(`/api/comments/${commentId}`)

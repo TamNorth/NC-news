@@ -7,6 +7,9 @@ const deleteComment = (commentId, next) => {
         WHERE comment_id = $1;`,
       [commentId]
     )
+    .then(() => {
+      return true;
+    })
     .catch((err) => {
       if (err.code === "22P02") {
         err.message = `comment_id must be an integer`;
