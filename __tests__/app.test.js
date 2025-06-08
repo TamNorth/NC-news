@@ -189,7 +189,6 @@ describe("GET /api/articles", () => {
         .get(`/api/articles?topic=${testTopic}`)
         .expect(404)
         .then(({ body: { message } }) => {
-          console.log(message);
           expect(message).toBe("Not found: nothing at topic: fakeTopic");
         });
     });

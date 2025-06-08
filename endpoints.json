@@ -20,6 +20,10 @@
         "description": "specifies the ordering of articles - ascending or descending - must be provided as 'asc' or 'desc'",
         "exampleRequest1": "?order=asc",
         "exampleRequest2": "?order=desc"
+      },
+      "topic": {
+        "description": "filters the array of article according to topic; topic must be provided as its primary key of 'slug'",
+        "exampleRequest1": "?topic=cooking"
       }
     },
     "exampleResponse": {
