@@ -26,6 +26,9 @@ const selectArticles = (queries) => {
       return rows;
     })
     .catch((err) => {
+      if (err.code === "42703") {
+        err.message = "specified sorting parameter does not exist";
+      }
       throw err;
     });
 };

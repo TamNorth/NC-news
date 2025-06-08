@@ -38,7 +38,7 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe.only("GET /api/articles", () => {
+describe("GET /api/articles", () => {
   describe("200: Responds with an object containing an array of all articles", () => {
     test("Responds with status code 200 and a non-empty array on the key of articles", () => {
       return request(app)
@@ -106,6 +106,17 @@ describe.only("GET /api/articles", () => {
             const sortedParams = paramsToSort.toSorted();
             expect(sortedParams).toEqual(paramsToSort);
           }
+        });
+    });
+
+    test("400: when the specified sort_by parameter does not exist, responds with an error message", () => {
+      return request(app)
+        .get("/api/articles?sort_by=fakeParam")
+        .expect(400)
+        .then(({ body: { message } }) => {
+          expect(message).toBe(
+            "Bad request: specified sorting parameter does not exist"
+          );
         });
     });
   });
