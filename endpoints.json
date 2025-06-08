@@ -10,7 +10,18 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
+    "description": "serves an array of all articles, by default sorted according to 'created_at' in descending order",
+    "query parameters": {
+      "sort_by": {
+        "description": "sorts the array according to the given column name, by default in ASCENDING order",
+        "exampleRequest": "?sort_by=title"
+      },
+      "order": {
+        "description": "specifies the ordering of articles - ascending or descending - must be provided as 'asc' or 'desc'",
+        "exampleRequest1": "?order=asc",
+        "exampleRequest2": "?order=desc"
+      }
+    },
     "exampleResponse": {
       "articles": [
         {
