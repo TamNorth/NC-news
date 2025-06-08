@@ -160,7 +160,6 @@ describe("GET /api/articles", () => {
         .get("/api/articles?order=ascending")
         .expect(400)
         .then(({ body: { message } }) => {
-          console.log(message);
           expect(message).toBe(
             "Bad request: order query must be provided as either 'asc' or 'desc'"
           );

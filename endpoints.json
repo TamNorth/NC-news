@@ -58,7 +58,8 @@
         "topic": "cooking",
         "created_at": "2020-11-22T11:13:00.000Z",
         "votes": 0,
-        "article_img_url": "https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?w=700&h=700"
+        "article_img_url": "https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?w=700&h=700",
+        "comment_count": 11
       }
     }
   },
