@@ -38,7 +38,7 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe.only("GET /api/articles", () => {
+describe("GET /api/articles", () => {
   describe("200: Responds with an object containing an array of all articles", () => {
     test("Responds with status code 200 and a non-empty array on the key of articles", () => {
       return request(app)
@@ -155,7 +155,17 @@ describe.only("GET /api/articles", () => {
         });
     });
 
-    test("400: when order param is not 'asc' or 'desc', responds with an error", () => {});
+    test("400: when order param is not 'asc' or 'desc', responds with an error", () => {
+      return request(app)
+        .get("/api/articles?order=ascending")
+        .expect(400)
+        .then(({ body: { message } }) => {
+          console.log(message);
+          expect(message).toBe(
+            "Bad request: order query must be provided as either 'asc' or 'desc'"
+          );
+        });
+    });
   });
 });
 
