@@ -5,8 +5,10 @@ const {
 } = require("../db/seeds/utils");
 const {
   deepCopyTable,
+  checkRowExists,
   checkArticleExists,
   checkCommentExists,
+  checkTopicExists,
 } = require("../utils");
 const db = require("../db/connection");
 const data = require("../db/data/test-data/index.js");
@@ -227,9 +229,27 @@ describe("deepCopyTable", () => {
   });
 });
 
-describe("checkArticleExists", () => {
-  test("returns a promise", () => {});
+describe("checkRowExists", () => {
+  test("resolves to 400 if the row primary key is not provided in the correct format", () => {
+    return checkRowExists("articles", "notanumber").then((result) => {
+      expect(result).toBe(400);
+    });
+  });
 
+  test("otherwise resolves 404 if the row does not exist", () => {
+    return checkRowExists("articles", 10000).then((result) => {
+      expect(result).toBe(404);
+    });
+  });
+
+  test("resolves to 200 if the row exists", () => {
+    return checkRowExists("articles", 1).then((result) => {
+      expect(result).toBe(200);
+    });
+  });
+});
+
+describe("checkArticleExists", () => {
   test("resolves to 400 if the article id is not provided as an integer", () => {
     return checkArticleExists("notanumber").then((result) => {
       expect(result).toBe(400);
@@ -264,6 +284,20 @@ describe("checkCommentExists", () => {
 
   test("resolves to 200 if the comment exists", () => {
     return checkCommentExists(1).then((result) => {
+      expect(result).toBe(200);
+    });
+  });
+});
+
+describe("checkTopicExists", () => {
+  test("otherwise resolves 404 if the topic does not exist", () => {
+    return checkTopicExists("fakeTopic").then((result) => {
+      expect(result).toBe(404);
+    });
+  });
+
+  test("resolves to 200 if the topic exists", () => {
+    return checkTopicExists("cats").then((result) => {
       expect(result).toBe(200);
     });
   });

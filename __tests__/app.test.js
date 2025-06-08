@@ -91,6 +91,7 @@ describe("GET /api/articles", () => {
         });
     });
   });
+
   describe("query: sort_by", () => {
     test("200: sorts the array of articles by the given parameter, by default in ascending order", () => {
       const sortingParameter = "title";
@@ -120,6 +121,7 @@ describe("GET /api/articles", () => {
         });
     });
   });
+
   describe("query: order", () => {
     test("200: orders the array as specified", () => {
       return request(app)
@@ -163,6 +165,32 @@ describe("GET /api/articles", () => {
           expect(message).toBe(
             "Bad request: order query must be provided as either 'asc' or 'desc'"
           );
+        });
+    });
+  });
+
+  describe("query: topic", () => {
+    test("200: responds with only articles matching the specified topic", () => {
+      const testTopic = "cats";
+      return request(app)
+        .get(`/api/articles?topic=${testTopic}`)
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles).not.toHaveLength(0);
+          articles.forEach((article) => {
+            expect(article.topic).toBe(testTopic);
+          });
+        });
+    });
+
+    test("404: when specified topic does not exist, responds with an error message", () => {
+      const testTopic = "fakeTopic";
+      return request(app)
+        .get(`/api/articles?topic=${testTopic}`)
+        .expect(404)
+        .then(({ body: { message } }) => {
+          console.log(message);
+          expect(message).toBe("Not found: nothing at topic: fakeTopic");
         });
     });
   });
