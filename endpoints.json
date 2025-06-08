@@ -22,7 +22,7 @@
         "exampleRequest2": "?order=desc"
       },
       "topic": {
-        "description": "filters the array of article according to topic; topic must be provided as its primary key of 'slug'",
+        "description": "filters the array of articles according to topic; topic must be provided as its primary key of 'slug'",
         "exampleRequest1": "?topic=cooking"
       }
     },
