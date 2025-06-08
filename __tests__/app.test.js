@@ -38,7 +38,7 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe("GET /api/articles", () => {
+describe.only("GET /api/articles", () => {
   describe("200: Responds with an object containing an array of all articles", () => {
     test("Responds with status code 200 and a non-empty array on the key of articles", () => {
       return request(app)
@@ -120,7 +120,43 @@ describe("GET /api/articles", () => {
         });
     });
   });
-  describe("query: order", () => {});
+  describe("query: order", () => {
+    test("200: orders the array as specified", () => {
+      return request(app)
+        .get("/api/articles?order=asc")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          for (let i = 1; i < articles.length; i++) {
+            const currentArticleDate = Number(
+              articles[i].created_at.split(/[\-T:\.Z]/).join("")
+            );
+            const previousArticleDate = Number(
+              articles[i - 1].created_at.split(/[\-T:\.Z]/).join("")
+            );
+            expect(previousArticleDate <= currentArticleDate).toBe(true);
+          }
+        });
+    });
+
+    test("200: works in conjunction with sort_by query", () => {
+      const sortingParameter = "title";
+      return request(app)
+        .get(`/api/articles?sort_by=${sortingParameter}&order=desc`)
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          for (let i = 1; i < articles.length; i++) {
+            const paramsToSort = [
+              articles[i - 1][sortingParameter],
+              articles[i][sortingParameter],
+            ];
+            const sortedParams = paramsToSort.toSorted().reverse();
+            expect(sortedParams).toEqual(paramsToSort);
+          }
+        });
+    });
+
+    test("400: when order param is not 'asc' or 'desc', responds with an error", () => {});
+  });
 });
 
 describe("GET /api/articles/:article_id", () => {

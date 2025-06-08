@@ -3,7 +3,14 @@ const format = require("pg-format");
 
 const selectArticles = (queries) => {
   const sortingParam = queries?.sort_by || "created_at";
-  const sortingOrder = queries?.sort_by ? "ASC" : "DESC";
+  const sortingOrder =
+    queries?.order === "asc"
+      ? "ASC"
+      : queries?.order === "desc"
+      ? "DESC"
+      : queries?.sort_by
+      ? "ASC"
+      : "DESC";
   const dbQuery = format(
     `SELECT 
       articles.*, 
