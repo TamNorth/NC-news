@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-const updateVotesOnArticle = (votes, articleId) => {
+const updateVotesOnArticle = (votes = 0, articleId) => {
   return db
     .query(
       `UPDATE articles

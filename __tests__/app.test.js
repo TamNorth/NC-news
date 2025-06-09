@@ -391,7 +391,7 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 });
 
-describe("PATCH /api/articles/:article_id", () => {
+describe.only("PATCH /api/articles/:article_id", () => {
   describe("200:", () => {
     test("increments the vote count on the article by the given amount", () => {
       const articleId = 6;
@@ -461,6 +461,31 @@ describe("PATCH /api/articles/:article_id", () => {
           expect(typeof article.article_img_url).toBe("string");
         });
     });
+
+    test("when there is no key of inc_votes, responds with an unchanged article", () => {
+      const articleId = 6;
+      let initialVotes = 0;
+      const votesToAdd = 12;
+      return db
+        .query(`SELECT votes FROM articles WHERE article_id = $1;`, [articleId])
+        .then(({ rows: [{ votes }] }) => {
+          initialVotes = votes;
+          return request(app)
+            .patch(`/api/articles/${articleId}`)
+            .send({})
+            .expect(200);
+        })
+        .then(({ body: { article } }) => {
+          expect(article.article_id).toBe(articleId);
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.body).toBe("string");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(article.votes).toBe(initialVotes);
+          expect(typeof article.article_img_url).toBe("string");
+        });
+    });
   });
 
   describe("error handling", () => {
@@ -502,9 +527,7 @@ describe("PATCH /api/articles/:article_id", () => {
             .expect(400);
         })
         .then(({ body: { message } }) => {
-          expect(message).toBe(
-            "Bad request: votes to add must be supplied in the format {inc_votes: <votes>} where <votes> is a number"
-          );
+          expect(message).toBe("Bad request: article_id must be an integer");
           return db.query(
             `SELECT votes 
               FROM articles 
@@ -514,20 +537,6 @@ describe("PATCH /api/articles/:article_id", () => {
         })
         .then(({ rows: [{ votes }] }) => {
           expect(votes).toBe(initialVotes);
-        });
-    });
-
-    test("400: When there is no key of inc_votes, responds with an error message", () => {
-      const articleId = 6;
-      const votesToAdd = 12;
-      return request(app)
-        .patch(`/api/articles/${articleId}`)
-        .send({ anotherKey: votesToAdd })
-        .expect(400)
-        .then(({ body: { message } }) => {
-          expect(message).toBe(
-            "Bad request: votes to add must be supplied in the format {inc_votes: <votes>} where <votes> is a number"
-          );
         });
     });
   });

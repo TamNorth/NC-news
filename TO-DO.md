@@ -30,19 +30,6 @@ Hints:
 
 ### CORE POST `/api/articles/1/comments`
 
-Assertion: expected { Object (comment_id, article_id, ...) } to contain key ‘comment’
-Hints:
-
-- send the new comment back to the client in an object, with a key of comment: `{ comment: {...} }`
-- ensure all columns in the comments table match the Instructions
-  Relevant Notes:
-- [SQL Insert Query Example](https://l2c.northcoders.com/courses/sd-notes/back-end/#sectionId=creating-and-inserting-data,step=inserting-into-a-table)
-- [pg-format Docs](https://www.npmjs.com/package/pg-format)
-
----
-
-### CORE POST `/api/articles/1/comments`
-
 Assertion: expected 201 to equal 400
 Hints:
 
