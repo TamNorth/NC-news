@@ -19,15 +19,6 @@ Hints:
 
 ---
 
-### CORE PATCH `/api/articles/1`
-
-Assertion: expected 400 to equal 200
-Hints:
-
-- ignore a `patch` request with no information in the request body, and send the unchanged article to the client
-
----
-
 ### CORE POST `/api/articles/1/comments`
 
 Assertion: expected 201 to equal 400

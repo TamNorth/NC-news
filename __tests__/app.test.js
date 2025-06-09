@@ -365,6 +365,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(message).toBe("Not found");
       });
   });
+
   test("404: when username does not match an existing username, responds with an error", () => {
     return request(app)
       .post(`/api/articles/${articleId}/comments`)
@@ -377,6 +378,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(message).toBe("Not found");
       });
   });
+
   test("400: when body is not a string, responds with an error", () => {
     return request(app)
       .post(`/api/articles/${articleId}/comments`)
@@ -389,9 +391,21 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(message).toBe("Bad request: comment body must be a string");
       });
   });
+
+  test("400: when one or more keys are not included, responds with an error", () => {
+    return request(app)
+      .post(`/api/articles/${articleId}/comments`)
+      .send({
+        body: "test",
+      })
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("Bad request: expected value for key author");
+      });
+  });
 });
 
-describe.only("PATCH /api/articles/:article_id", () => {
+describe("PATCH /api/articles/:article_id", () => {
   describe("200:", () => {
     test("increments the vote count on the article by the given amount", () => {
       const articleId = 6;
