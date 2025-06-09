@@ -18,11 +18,11 @@ const seed = ({
       DROP TABLE IF EXISTS topics;
       CREATE TABLE topics (
         description VARCHAR (200), 
-        slug VARCHAR(20) PRIMARY KEY, 
+        slug VARCHAR(20) NOT NULL PRIMARY KEY, 
         img_url VARCHAR (1000)
       ); 
       CREATE TABLE users (
-        username VARCHAR(40) PRIMARY KEY, 
+        username VARCHAR(40) NOT NULL PRIMARY KEY, 
         name VARCHAR (40), 
         avatar_url VARCHAR(1000)
       ); 
@@ -46,8 +46,8 @@ const seed = ({
       );
       CREATE TABLE user_topic (
         user_topic_id SERIAL PRIMARY KEY,
-        username VARCHAR(40) REFERENCES users(username) ON DELETE CASCADE,
-        topic VARCHAR(20) REFERENCES topics(slug) ON DELETE CASCADE
+        username VARCHAR(40) NOT NULL REFERENCES users(username) ON DELETE CASCADE,
+        topic VARCHAR(20) NOT NULL REFERENCES topics(slug) ON DELETE CASCADE
       );`
     )
     .then(() => {
