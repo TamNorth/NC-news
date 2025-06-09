@@ -8,7 +8,7 @@ const insertCommentOnArticle = (articleId, comment) => {
       [username, body, articleId]
     )
     .then(({ rows: [response] }) => {
-      return response;
+      return { comment: response };
     })
     .catch((err) => {
       if (err.code === "23503") {

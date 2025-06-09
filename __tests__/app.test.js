@@ -330,13 +330,13 @@ describe("POST /api/articles/:article_id/comments", () => {
           body: testCommentBody,
         })
         .expect(201)
-        .then(({ body: response }) => {
-          expect(typeof response.comment_id).toBe("number");
-          expect(typeof response.votes).toBe("number");
-          expect(typeof response.created_at).toBe("string");
-          expect(typeof response.author).toBe("string");
-          expect(typeof response.body).toBe("string");
-          expect(typeof response.article_id).toBe("number");
+        .then(({ body: { comment } }) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.article_id).toBe("number");
         });
     });
   });
