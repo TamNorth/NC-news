@@ -1,0 +1,26 @@
+* {
+  background-color: #363636;
+  color: #e6e6e6;
+}
+
+p {
+  width: 1000 px;
+  padding: 10px;
+  border: 1px solid black;
+  margin: 20px;
+  box-sizing: border-box;
+}
+
+:root {
+  background-color: #191919;
+  color: #ffffff;
+}
+
+h1 {
+  background-color: #f15025;
+  color: #ffffff;
+}
+
+h2 {
+  color: #f15025;
+}

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="./style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Endpoints</title>
+  </head>
+  <body>
+    <header>
+      <h1>Overview of API Endpoints</h1>
+      <p>
+        Below is an overview of this API's available HTTP methods and paths,
+        together with a description of their responses and, where appropriate,
+        examples of valid input and a typical response
+      </p>
+    </header>
+    <main>
+      <nav>
+        <ol>
+          <li>
+            GET
+            <ol>
+              <li>/api/topics</li>
+              <li>/api/users</li>
+              <li>/api/articles</li>
+              <li>/api/articles/:article_id</li>
+              <li>/api/articles/:article_id/comments</li>
+            </ol>
+          </li>
+          <li>
+            POST
+            <ol>
+              <li>/api/articles/:article_id/comments</li>
+            </ol>
+          </li>
+          <li>
+            PATCH
+            <ol>
+              <li>/api/articles/:article_id</li>
+            </ol>
+          </li>
+          <li>
+            DELETE
+            <ol>
+              <li>/api/comments/:comment_id</li>
+            </ol>
+          </li>
+        </ol>
+      </nav>
+      <section>
+        <h2>GET Endpoints</h2>
+        <section>
+          <h3>/api/topics</h3>
+          <h4>Description</h4>
+          <p>serves an array of all topics</p>
+          <h4>Example Response</h4>
+          <pre>
+{
+      "topics": [{ "slug": "football", "description": "Footie!" }]
+    }</pre
+          >
+        </section>
+        <section>
+          <h3>/api/users</h3>
+          <h4>Description</h4>
+          <p>serves an array of all users</p>
+          <h4>Example Response</h4>
+          <pre>
+{
+      "users": [
+        {
+          "username": "weegembump",
+          "name": "Gemma Bump",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/7e/MrMen-Bump.png/revision/latest?cb=20180123225553"
+        }
+      ]
+    }</pre
+          >
+        </section>
+        <section>
+          <h3>/api/articles</h3>
+          <h4>Description</h4>
+          <p>
+            Serves an array of all articles, by default sorted according to
+            'created_at' in descending order
+          </p>
+          <h4>Query Parameters</h4>
+          <table>
+            <tr>
+              <th>Query</th>
+              <th>Description</th>
+              <th>Example Request</th>
+            </tr>
+            <tr>
+              <th>sort_by</th>
+              <th>
+                Sorts the array according to the given column name, by default
+                in ASCENDING order
+              </th>
+              <th>?sort_by=title</th>
+            </tr>
+            <tr>
+              <th>order</th>
+              <th>
+                Specifies the ordering of articles - ascending or descending -
+                must be provided as 'asc' or 'desc'
+              </th>
+              <th>?order=desc</th>
+            </tr>
+            <tr>
+              <th>topic</th>
+              <th>
+                Filters the array of articles according to topic; topic must be
+                provided as its primary key of 'slug'
+              </th>
+              <th>?topic=cooking</th>
+            </tr>
+          </table>
+          <h4>Example Response</h4>
+          <pre>
+{
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": 6
+        }
+      ]
+    }</pre
+          >
+          <h3>/api/</h3>
+          <h4>Description</h4>
+          <p></p>
+          <h4>Example Response</h4>
+          <p></p>
+          <h3>/api/</h3>
+          <h4>Description</h4>
+          <p></p>
+          <h4>Example Response</h4>
+          <p></p>
+        </section>
+        <section>
+          <h3>/api/articles/:article_id</h3>
+          <h4>Description</h4>
+          <p>Serves an article specified by its id</p>
+          <h4>Example Response</h4>
+          <pre>
+{
+      "article": {
+        "author": "grumpy19",
+        "title": "The Notorious MSG’s Unlikely Formula For Success",
+        "article_id": 34,
+        "body": "The 'umami' craze has turned a much-maligned and misunderstood food additive into an object of obsession for the world’s most innovative chefs. But secret ingredient monosodium glutamate’s biggest secret may be that there was never anything wrong with it at all.",
+        "topic": "cooking",
+        "created_at": "2020-11-22T11:13:00.000Z",
+        "votes": 0,
+        "article_img_url": "https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?w=700&h=700",
+        "comment_count": 11
+      }
+    }</pre
+          >
+        </section>
+        <section>
+          <h3>/api/articles/:article_id/comments</h3>
+          <h4>Description</h4>
+          <p>
+            serves an array of all comments associated with the specified
+            article
+          </p>
+          <h4>Example Response</h4>
+          <pre>
+{
+      "comments": [
+        {
+          "comment_id": 16,
+          "votes": 1,
+          "created_at": "2020-10-11T15:23:00.000Z",
+          "author": "butter_bridge",
+          "body": "This is a bad article name",
+          "article_id": 6
+        }
+      ]
+    }</pre
+          >
+        </section>
+      </section>
+      <section>
+        <h2>POST Endpoints</h2>
+        <section>
+          <h3>/api/articles/:article_id/comments</h3>
+          <h4>Description</h4>
+          <p>
+            adds a comment to the article specified by :article_id and responds
+            with the posted comment
+          </p>
+          <h4>Example Input</h4>
+          <pre>
+{
+      "username": "butter_bridge",
+      "body": "This is a bad article name"
+    }</pre
+          >
+          <h4>Example Response</h4>
+          <pre>
+{
+      "comment": {
+        "comment_id": 16,
+        "votes": 0,
+        "created_at": "2020-10-11T15:23:00.000Z",
+        "author": "butter_bridge",
+        "body": "This is a bad article name",
+        "article_id": 6
+      }
+    }</pre
+          >
+        </section>
+      </section>
+      <section>
+        <h2>PATCH Endpoints</h2>
+        <section>
+          <h3>/api/articles/:article_id</h3>
+          <h4>Description</h4>
+          <p>
+            increments the vote count on an article by the given amount and
+            responds with a copy of the updated article
+          </p>
+          <h4>Example Input</h4>
+          <pre>{ "inc_votes": 5 }</pre>
+          <h4>Example Response</h4>
+          <pre>
+{
+      "article": {
+        "author": "grumpy19",
+        "title": "The Notorious MSG’s Unlikely Formula For Success",
+        "article_id": 34,
+        "body": "The 'umami' craze has turned a much-maligned and misunderstood food additive into an object of obsession for the world’s most innovative chefs. But secret ingredient monosodium glutamate’s biggest secret may be that there was never anything wrong with it at all.",
+        "topic": "cooking",
+        "created_at": "2020-11-22T11:13:00.000Z",
+        "votes": 5,
+        "article_img_url": "https://images.pexels.com/photos/2403392/pexels-photo-2403392.jpeg?w=700&h=700"
+      }
+    }</pre
+          >
+        </section>
+      </section>
+      <section>
+        <h2>DELETE Endpoints</h2>
+        <section>
+          <h3>/api/comments/:comment_id</h3>
+          <h4>Description</h4>
+          <p>
+            Deletes the comment associated with the given comment_id; responds
+            with status code 204 and no content
+          </p>
+        </section>
+      </section>
+    </main>
+    <footer></footer>
+  </body>
+</html>
