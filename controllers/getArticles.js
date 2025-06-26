@@ -40,7 +40,7 @@ const getArticles = async (req, res, next) => {
       dbQueryBuilder += format(`WHERE topic = %L `, topic);
     }
     dbQueryBuilder += `GROUP BY articles.article_id
-    ORDER BY articles.%I %s;`;
+    ORDER BY ${sortingParam === "comment_count" ? "%I" : "articles.%I"} %s;`;
     const dbQuery = format(dbQueryBuilder, sortingParam, sortingOrder);
     const [topicExists, rows] = await Promise.all([
       topicExistsPromise,

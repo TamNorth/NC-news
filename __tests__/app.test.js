@@ -110,6 +110,27 @@ describe("GET /api/articles", () => {
         });
     });
 
+    test("200: sorts the array of articles by a computed column, by default in ascending order", () => {
+      const sortingParameter = "comment_count";
+      return request(app)
+        .get(`/api/articles?sort_by=${sortingParameter}`)
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          for (let i = 1; i < articles.length; i++) {
+            const paramsToSort = [
+              articles[i - 1][sortingParameter],
+              articles[i][sortingParameter],
+            ];
+            const sortedParams = paramsToSort.toSorted((a, b) => {
+              a - b;
+            });
+            console.log(sortedParams);
+            console.log(paramsToSort);
+            expect(sortedParams).toEqual(paramsToSort);
+          }
+        });
+    });
+
     test("400: when the specified sort_by parameter does not exist, responds with an error message", () => {
       return request(app)
         .get("/api/articles?sort_by=fakeParam")
