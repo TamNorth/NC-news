@@ -8,6 +8,11 @@ const getArticles = async (req, res, next) => {
     const topic = queries?.topic;
     const topicExistsPromise = topic ? checkTopicExists(topic) : null;
     const sortingParam = queries?.sort_by || "created_at";
+    let commentCountSort = false;
+    if (sortingParam === "comment_count") {
+      sortingParam = "created_at";
+      commentCountSort = true;
+    }
     const sortingOrder =
       queries?.order === "asc"
         ? "ASC"
@@ -43,6 +48,11 @@ const getArticles = async (req, res, next) => {
     ]);
     if (topicExists === 404) {
       return Promise.reject({ status: 404, params: { topic: topic } });
+    }
+    if ((commentCountSort = true)) {
+      rows.sort((a, b) => {
+        a.comment_count - b.comment_count;
+      });
     }
     res.status(200).send({ articles: rows });
   } catch (err) {
