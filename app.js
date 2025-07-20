@@ -24,11 +24,11 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-app.get("/", (req, res) =>
-  res.send(
-    "Please use the /api endpoint to see a list of available endpoints on this API"
-  )
-);
+app.get("/favicon.ico", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "tea_news.svg"));
+});
+
+// app.use(express.favicon(__dirname + "/public/tea_news.svg"));
 
 app.get("/api", (req, res) => getEndpoints(req, res));
 
